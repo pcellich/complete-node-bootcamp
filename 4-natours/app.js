@@ -33,12 +33,14 @@ app.use((req, res, next) => {
 // MOUNTING A ROUTER
 app.use('/api/V1/users', userRouter);
 app.use('/api/V1/tours', tourRouter);
+// app.use('/api/V1/tours', tourRouter);
 
 // app.route('/').get(toursHome);
 
-const port = 5005;
-app.listen(port, () => {
-  console.log(`App running on port ${port}`);
-});
+// const port = 5005;
+// app.listen(port, () => {
+//   console.log(`App running on port ${port}`);
+// });
 
 // 127.0.0.1:5005
+module.exports = app;
