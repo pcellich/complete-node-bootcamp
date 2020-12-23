@@ -1,7 +1,10 @@
-const { fail } = require('assert');
+// const { fail } = require('assert');
 const express = require('express');
-const fs = require('fs');
+
 const morgan = require('morgan');
+
+const tourRouter = require('./starter/routes/tourRoutes');
+const userRouter = require('./starter/routes/userRoutes');
 
 const app = express();
 
@@ -19,142 +22,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// ROUTE HANDLERS
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/starter/dev-data/data/tours-simple.json`)
-);
-
-const toursHome = (req, res) => {
-  res
-    .status(200)
-    .json({ message: 'Hello from the Server side!', app: 'Natours' });
-};
-
-const getAllTours = (req, res) => {
-  console.log(req.requestTime);
-  res.status(200).json({
-    requestedAt: req.requestTime,
-    status: 'Success',
-    result: tours.length,
-    data: {
-      tours,
-    },
-  });
-};
-const getOneTour = (req, res) => {
-  req.requestTime;
-  // console.log(req.params);
-  const id = Number(req.params.id);
-  const tour = tours.find((el) => el.id === id);
-  // if (id > tours.length) {
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
-  res.status(200).json({
-    requestedAt: req.requestTime,
-    status: 'Success',
-    data: {
-      tour,
-    },
-  });
-};
-
-const createTour = (req, res) => {
-  const newId = tours[tours.length - 1].id + 1;
-  newTour = Object.assign({ id: newId }, req.body);
-  tours.push(newTour);
-
-  fs.writeFile(
-    `${__dirname}/starter/dev-data/data/tours-simple.json`,
-    JSON.stringify(tours),
-    (err) => {
-      res.status(201).json({
-        'you posted at': req.requestTime,
-        status: 'Success',
-        data: {
-          tour: newTour,
-        },
-      });
-    }
-  );
-};
-
-const UpdateTour = (req, res) => {
-  if (Number(req.params.id) > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
-  return res.status(200).json({
-    status: 'Success',
-    data: {
-      tour: '<Updated tour here>',
-    },
-  });
-};
-
-const deleteTour = (req, res) => {
-  if (Number(req.params.id) > tours.length) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
-  return res.status(204).json({
-    status: 'Success',
-    data: null,
-  });
-};
-
-const getAllUsers = (req, res) => {
-  console.log(req.requestTime);
-  res.status(500).json({
-    requestedAt: req.requestTime,
-    status: 'error',
-    message: 'this route is not defined',
-  });
-};
-
-const getOneUser = (req, res) => {
-  console.log(req.requestTime);
-  res.status(500).json({
-    requestedAt: req.requestTime,
-    status: 'error',
-    message: 'this route is not defined',
-  });
-};
-const createUser = (req, res) => {
-  console.log(req.requestTime);
-  res.status(500).json({
-    requestedAt: req.requestTime,
-    status: 'error',
-    message: 'this route is not defined',
-  });
-};
-const UpdateUser = (req, res) => {
-  console.log(req.requestTime);
-  res.status(500).json({
-    requestedAt: req.requestTime,
-    status: 'error',
-    message: 'this route is not defined',
-  });
-};
-const deleteUser = (req, res) => {
-  console.log(req.requestTime);
-  res.status(500).json({
-    requestedAt: req.requestTime,
-    status: 'error',
-    message: 'this route is not defined',
-  });
-};
-
 // app.get('/', toursHome);
 // app.get('/api/V1/tours', getAllTours);
 // app.get('/api/V1/tours/:id', getOneTour);
@@ -163,117 +30,11 @@ const deleteUser = (req, res) => {
 // app.delete('/api/V1/tours/:id', deleteTour);
 
 // ROUTES
-
-const tourRouter = express.Router();
+// MOUNTING A ROUTER
+app.use('/api/V1/users', userRouter);
 app.use('/api/V1/tours', tourRouter);
-// app.use('/api/V1/users', userRouter);
-app.route('/').get(toursHome);
-tourRouter.route('/').get(getAllTours).post(createTour);
-tourRouter.route('/:id').get(getOneTour).patch(UpdateTour).delete(deleteTour);
 
-app.route('/api/V1/users').get(getAllUsers).post(createUser);
-app
-  .route('/api/V1/users/:id')
-  .get(getOneUser)
-  .patch(UpdateUser)
-  .delete(deleteUser);
-
-// app.get('/', (req, res) => {
-//   res
-//     .status(200)
-//     .json({ message: 'Hello from the Server side!', app: 'Natours' });
-// });
-// app.get('/api/V1/tours', (req, res) => {
-//   res.status(200).json({
-//     status: 'Success',
-//     result: tours.length,
-//     data: {
-//       tours,
-//     },
-//   });
-// });
-// app.get('/api/V1/tours/:id', (req, res) => {
-//   console.log(req.params);
-//   const id = Number(req.params.id);
-//   const tour = tours.find((el) => el.id === id);
-//   // if (id > tours.length) {
-//   if (!tour) {
-//     return res.status(404).json({
-//       status: 'fail',
-//       message: 'Invalid ID',
-//     });
-//   }
-//   // const tour = tours.find((el) => el.id === id);
-//   res.status(200).json({
-//     status: 'Success',
-//     data: {
-//       tour,
-//     },
-//   });
-// });
-// app.post('/api/V1/tours', (req, res) => {
-//   const newId = tours[tours.length - 1].id + 1;
-//   newTour = Object.assign({ id: newId }, req.body);
-//   tours.push(newTour);
-
-//   fs.writeFile(
-//     `${__dirname}/starter/dev-data/data/tours-simple.json`,
-//     JSON.stringify(tours),
-//     (err) => {
-//       res.status(201).json({
-//         status: 'Success',
-//         data: {
-//           tour: newTour,
-//         },
-//       });
-//     }
-//   );
-// console.log(req.body);
-// res.status(201).send('Your post was successful!');
-// });
-
-// app.patch('/api/V1/tours/:id', (req, res) => {
-//   if (Number(req.params.id) > tours.length) {
-//     return res.status(404).json({
-//       status: 'fail',
-//       message: 'Invalid ID',
-//     });
-//   }
-
-//   return res.status(200).json({
-//     status: 'Success',
-//     data: {
-//       tour: '<Updated tour here>',
-//     },
-//   });
-// });
-
-// app.delete('/api/V1/tours/:id', (req, res) => {
-//   if (Number(req.params.id) > tours.length) {
-//     return res.status(404).json({
-//       status: 'fail',
-//       message: 'Invalid ID',
-//     });
-//   }
-
-//   return res.status(204).json({
-//     status: 'Success',
-//     data: null,
-//   });
-// });
-
-// app.get('/', (req, res) => {
-//   res
-//     .status(200)
-//     .json({ message: 'Hello from the Server side!', app: 'Natours' });
-// });
-
-// app.post('/send', (req, res) => {
-//   res.status(201).send('Your post was successful!');
-// });
-// app.post('/send', (req, res) => {
-//     res.status(201).send('Your post was successful!');
-//   });
+// app.route('/').get(toursHome);
 
 const port = 5005;
 app.listen(port, () => {
