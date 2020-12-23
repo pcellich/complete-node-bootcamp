@@ -19,6 +19,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// ROUTE HANDLERS
 const tours = JSON.parse(
   fs.readFileSync(`${__dirname}/starter/dev-data/data/tours-simple.json`)
 );
@@ -62,7 +63,7 @@ const getOneTour = (req, res) => {
   });
 };
 
-const createTours = (req, res) => {
+const createTour = (req, res) => {
   const newId = tours[tours.length - 1].id + 1;
   newTour = Object.assign({ id: newId }, req.body);
   tours.push(newTour);
@@ -112,20 +113,70 @@ const deleteTour = (req, res) => {
   });
 };
 
+const getAllUsers = (req, res) => {
+  console.log(req.requestTime);
+  res.status(500).json({
+    requestedAt: req.requestTime,
+    status: 'error',
+    message: 'this route is not defined',
+  });
+};
+
+const getOneUser = (req, res) => {
+  console.log(req.requestTime);
+  res.status(500).json({
+    requestedAt: req.requestTime,
+    status: 'error',
+    message: 'this route is not defined',
+  });
+};
+const createUser = (req, res) => {
+  console.log(req.requestTime);
+  res.status(500).json({
+    requestedAt: req.requestTime,
+    status: 'error',
+    message: 'this route is not defined',
+  });
+};
+const UpdateUser = (req, res) => {
+  console.log(req.requestTime);
+  res.status(500).json({
+    requestedAt: req.requestTime,
+    status: 'error',
+    message: 'this route is not defined',
+  });
+};
+const deleteUser = (req, res) => {
+  console.log(req.requestTime);
+  res.status(500).json({
+    requestedAt: req.requestTime,
+    status: 'error',
+    message: 'this route is not defined',
+  });
+};
+
 // app.get('/', toursHome);
 // app.get('/api/V1/tours', getAllTours);
 // app.get('/api/V1/tours/:id', getOneTour);
-// app.post('/api/V1/tours', createTours);
+// app.post('/api/V1/tours', createTour);
 // app.patch('/api/V1/tours/:id', UpdateTour);
 // app.delete('/api/V1/tours/:id', deleteTour);
 
+// ROUTES
+
+const tourRouter = express.Router();
+app.use('/api/V1/tours', tourRouter);
+// app.use('/api/V1/users', userRouter);
 app.route('/').get(toursHome);
-app.route('/api/V1/tours').get(getAllTours).post(createTours);
+tourRouter.route('/').get(getAllTours).post(createTour);
+tourRouter.route('/:id').get(getOneTour).patch(UpdateTour).delete(deleteTour);
+
+app.route('/api/V1/users').get(getAllUsers).post(createUser);
 app
-  .route('/api/V1/tours/:id')
-  .get(getOneTour)
-  .patch(UpdateTour)
-  .delete(deleteTour);
+  .route('/api/V1/users/:id')
+  .get(getOneUser)
+  .patch(UpdateUser)
+  .delete(deleteUser);
 
 // app.get('/', (req, res) => {
 //   res
