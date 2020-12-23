@@ -118,7 +118,8 @@ const deleteTour = (req, res) => {
 // app.post('/api/V1/tours', createTours);
 // app.patch('/api/V1/tours/:id', UpdateTour);
 // app.delete('/api/V1/tours/:id', deleteTour);
-app.route('/', toursHome);
+
+app.route('/').get(toursHome);
 app.route('/api/V1/tours').get(getAllTours).post(createTours);
 app
   .route('/api/V1/tours/:id')
