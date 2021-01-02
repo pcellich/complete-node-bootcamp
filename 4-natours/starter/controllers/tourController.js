@@ -6,11 +6,21 @@ const tours = JSON.parse(
 );
 
 exports.checkID = (req, res, next, val) => {
-  //   console.log(req.requestTime);
+  console.log(req.requestTime);
   if (Number(req.params.id) > tours.length) {
     return res.status(404).json({
       status: 'fail',
       message: 'Invalid ID',
+    });
+  }
+  next();
+};
+exports.checkBody = (req, res, next) => {
+  // console.log(req.body);
+  if (!req.body.name || !req.body.price) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Missing name or price',
     });
   }
   next();
